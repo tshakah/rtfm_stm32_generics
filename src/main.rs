@@ -24,22 +24,25 @@ const APP: () = {
         // Acquire the GPIO peripherals
         let mut gpioa = c.device.GPIOA.split(&mut rcc.apb2);
 
+        // Construct the array
         let pins : Pins = [
             &mut gpioa.pa8.into_push_pull_output(&mut gpioa.crh),
             &mut gpioa.pa9.into_push_pull_output(&mut gpioa.crh),
         ];
 
+        // Initialise the resources and return
         init::LateResources { pins: pins }
     }
 
     #[idle(resources = [pins])]
     fn idle(c: idle::Context) -> ! {
-        // Initialise pins high
+        // Set pins high
         for pin in c.resources.pins.iter_mut() {
             pin.set_high().unwrap();
         }
 
         loop {
+            // Do other things
         }
     }
 };
