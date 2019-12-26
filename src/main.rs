@@ -5,10 +5,10 @@
 
 extern crate panic_semihosting;
 
-use stm32f1xx_hal::prelude::*;
+use stm32f1xx_hal::{prelude::*, gpio};
 use embedded_hal::digital::v2::OutputPin;
 
-type Pins = [&'static mut dyn OutputPin<Error = core::convert::Infallible>; 2];
+type Pins = [gpio::Pxx<gpio::Output<gpio::PushPull>>; 2];
 
 #[rtfm::app(device = stm32f1xx_hal::device, peripherals = true)]
 const APP: () = {
@@ -26,8 +26,8 @@ const APP: () = {
 
         // Construct the array
         let pins : Pins = [
-            &mut gpioa.pa8.into_push_pull_output(&mut gpioa.crh),
-            &mut gpioa.pa9.into_push_pull_output(&mut gpioa.crh),
+            gpioa.pa8.into_push_pull_output(&mut gpioa.crh).downgrade(),
+            gpioa.pa9.into_push_pull_output(&mut gpioa.crh).downgrade(),
         ];
 
         // Initialise the resources and return
